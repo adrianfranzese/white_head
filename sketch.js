@@ -27,8 +27,9 @@ function setup() {
   adrianProfile = select('#adrianProfile')
   trumpProfile = select('#trumpProfile')
 
-  // Creates a new scene every 10 seconds (for display purposes)
-  setInterval(newScene, 10000);
+  newScene()
+  // Creates a new scene every 30 seconds (for display purposes)
+  setInterval(newScene, 30000);
 }
 
 function newScene() {
@@ -89,12 +90,12 @@ function getAzure(url, sentence01, sentence02) {
     },
     function(result) {
       result = JSON.parse(result);
-      if (url == sentiment) {
+      if (url == sentiment) { // If i've asked for sentiment, run the sentiment callback
         runSentimentCode(result);
-      } else if (url == keywords) {
+      } else if (url == keywords) {  // If I've asked for keywords, run the keywords callback
         runKeywordsCode(result);
       } else {
-        console.log("Something is fishy...");
+        console.log("Use only 'sentiment' OR 'keywords' in getAzure(url, sentence1, sentence2)");
       }
     }
   );
@@ -103,6 +104,10 @@ function getAzure(url, sentence01, sentence02) {
 
 function runSentimentCode(results) {
   let trumpMood = results.documents[0].score;
+  // Change the profile images based on sentiment score (0.0 to 1.0)
+  // Closer to 0.0: More negative
+  // Closer to 1.0: More positive
+  // Around the middle, guess it's kinda neutral then
   if (trumpMood > 0.6) {
     trumpProfile.style('background-image', 'url("data/images/trump_good.gif")')
   } else if (trumpMood < 0.4) {
